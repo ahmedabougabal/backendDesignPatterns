@@ -11,15 +11,18 @@ app.post("/submit", async(req, res)=> {
 
 app.get("/checkstatus", async (req, res)=> {
     const jobId = req.query.jobId;
+
+    
+    if(jobId === undefined || jobs[jobId] === undefined){
+        res.end( `there are no jobs with this id.\n`)
+        return ;
+    }
+
     // long polling , don't respond until it is done 
     while (await waitForJobCompletion(jobId) == false);
     res.end(`\n\n ${jobId} , Status : Complete ` + jobs[jobId] + "%\n\n")
 })
 
-
-if(jobId == undefined){
-    return `there are no jobs with this id.`
-}
 
 
 app.listen(8080, ()=>{
